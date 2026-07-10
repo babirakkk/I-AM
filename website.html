@@ -61,6 +61,17 @@
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(74, 105, 132, 0.2);
         }
+        /* Ambient Background Canvas */
+        #rain-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.55; /* Increased opacity for realistic rain feeling */
+        }
         /* Smooth content stacking */
         .content-layer {
             position: relative;
@@ -81,9 +92,18 @@
         .animate-fade-in-up {
             animation: customFadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+        .animation-delay-200 {
+            animation-delay: 200ms;
+        }
+        .animation-delay-400 {
+            animation-delay: 400ms;
+        }
     </style>
 </head>
 <body class="relative min-h-screen selection:bg-steelblue/35">
+
+    <!-- Ambient Dynamic Rain Canvas -->
+    <canvas id="rain-canvas"></canvas>
 
     <!-- Header Navigation -->
     <header class="content-layer w-full fixed top-0 left-0 bg-darkbg/85 backdrop-blur-md border-b border-white/5 transition-all duration-300 z-50">
@@ -498,6 +518,9 @@
 
     <!-- Dynamic Logic Script -->
     <script>
+        // ----------------------------------------------------
+        // Mobile Navigation controls
+        // ----------------------------------------------------
         function toggleMenu() {
             const menu = document.getElementById('mobile-menu');
             if (menu) {
@@ -522,6 +545,208 @@
         });
 
 
+        // ----------------------------------------------------
+        // Advanced Custom Fluid Canvas Rain and ripple Generator
+        // ----------------------------------------------------
+        const canvas = document.getElementById('rain-canvas');
+        let ctx = null;
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        const raindrops = [];
+        const ripples = [];
+        const splashes = [];
+        const maxRaindrops = 140; // Increased drop density for realistic heavy pouring ("주륵주륵")
+
+        class Raindrop {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * -height;
+                // Create a 3D Z-plane multiplier to create realistic parallax depth
+                this.z = Math.random(); // 0 (far away) to 1 (close up)
+                
+                // Far drops are slower/shorter, close drops are faster/longer/bolder
+                this.vy = 8 + this.z * 10; 
+                this.length = 18 + this.z * 22;
+                this.alpha = 0.08 + this.z * 0.35;
+                this.wind = -1.2 - Math.random() * 1.5; // Angled wind blowing slightly to the left
+            }
+
+            update() {
+                this.y += this.vy;
+                this.x += this.wind;
+
+                // If drop hits the bottom boundary of the browser
+                if (this.y > height - 10) {
+                    // Create splashing particle ripples on floor impact
+                    if (splashes.length < 150 && Math.random() < 0.35) {
+                        createSplashes(this.x, height - 5);
+                    }
+                    // Create beautiful concentric circle ripples on click water plane
+                    if (ripples.length < 15 && Math.random() < 0.05) {
+                        ripples.push(new Ripple(this.x, height - 15));
+                    }
+                    this.reset();
+                }
+
+                // Warp on X edge
+                if (this.x < -40) {
+                    this.x = width + 40;
+                }
+            }
+
+            draw() {
+                if (!ctx) return;
+                ctx.beginPath();
+                
+                // Advanced glass gradient for 3D light refraction look
+                let grad = ctx.createLinearGradient(this.x, this.y, this.x + this.wind, this.y + this.length);
+                grad.addColorStop(0, `rgba(101, 137, 168, 0)`);
+                grad.addColorStop(1, `rgba(148, 187, 222, ${this.alpha})`);
+                
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = 0.6 + this.z * 1.2; // Far drops are thin, near drops are thicker
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x + this.wind, this.y + this.length);
+                ctx.stroke();
+            }
+        }
+
+        class Ripple {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 0.5;
+                this.maxRadius = 15 + Math.random() * 20;
+                this.alpha = 0.35;
+                this.speed = 0.4 + Math.random() * 0.4;
+            }
+
+            update() {
+                this.radius += this.speed;
+                this.alpha -= 0.009;
+            }
+
+            draw() {
+                if (!ctx) return;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(101, 137, 168, ${this.alpha})`;
+                ctx.lineWidth = 0.7;
+                ctx.stroke();
+            }
+        }
+
+        // Beautiful tiny splashing droplets
+        class Splash {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 4; // Spray left or right
+                this.vy = -Math.random() * 3 - 1.5;   // Bounce upward
+                this.radius = 0.8 + Math.random() * 1.2;
+                this.alpha = 0.6;
+                this.gravity = 0.15;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += this.gravity; // Gravity pulling it down
+                this.alpha -= 0.03;
+            }
+
+            draw() {
+                if (!ctx) return;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(148, 187, 222, ${this.alpha})`;
+                ctx.fill();
+            }
+        }
+
+        function createSplashes(x, y) {
+            let count = 2 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < count; i++) {
+                splashes.push(new Splash(x, y));
+            }
+        }
+
+        function initCanvas() {
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            if (!ctx) return;
+            
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+
+            for (let i = 0; i < maxRaindrops; i++) {
+                raindrops.push(new Raindrop());
+            }
+
+            // Interactive Ripple on click
+            window.addEventListener('click', (e) => {
+                if (ripples.length < 30) {
+                    ripples.push(new Ripple(e.clientX, e.clientY));
+                    ripples.push(new Ripple(e.clientX, e.clientY + 5));
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            animate();
+        }
+
+        function animate() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, width, height);
+
+            // 1. Draw Raindrops
+            raindrops.forEach(drop => {
+                drop.update();
+                drop.draw();
+            });
+
+            // 2. Draw Splashes
+            for (let i = splashes.length - 1; i >= 0; i--) {
+                const splash = splashes[i];
+                splash.update();
+                if (splash.alpha <= 0) {
+                    splashes.splice(i, 1);
+                } else {
+                    splash.draw();
+                }
+            }
+
+            // 3. Draw Water ripples
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                const rip = ripples[i];
+                rip.update();
+                if (rip.alpha <= 0) {
+                    ripples.splice(i, 1);
+                } else {
+                    rip.draw();
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Trigger Canvas initialization on window load safely
+        window.addEventListener('load', () => {
+            initCanvas();
+        });
+
+
+        // ----------------------------------------------------
+        // Web Audio Rain Ambient Sound Synthesizer (Defensive implementation)
+        // ----------------------------------------------------
         let audioCtx = null;
         let ambientSounding = false;
         let whiteNoise = null;
@@ -597,6 +822,9 @@
         }
 
 
+        // ----------------------------------------------------
+        // Gallery Experience Modal & Story Database
+        // ----------------------------------------------------
         const experiences = {
             tokyo: {
                 title: "우산이 그리는 기하학적 파도",
@@ -693,6 +921,9 @@
         }
 
 
+        // ----------------------------------------------------
+        // Dynamic Mood Explorer Custom Database
+        // ----------------------------------------------------
         const travelStyles = {
             contemplation: {
                 badge: "마음 사색 코스",
@@ -746,6 +977,9 @@
         }
 
 
+        // ----------------------------------------------------
+        // Form Submission Interactivity
+        // ----------------------------------------------------
         function handleFormSubmit(e) {
             e.preventDefault();
             const nameEl = document.getElementById('visitor-name');
