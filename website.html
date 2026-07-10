@@ -394,7 +394,12 @@
                         <div class="bg-darkbg/70 p-4 rounded-lg space-y-1 border border-white/5 flex flex-col justify-center">
                             <div>
                                 <span class="text-[9px] text-steelblue font-bold uppercase tracking-widest block">Recommended Sound / Music</span>
-                                <p class="text-xs text-slate-300 font-semibold mt-1" id="result-music">Rachmaninoff - Vocalise, Op. 34 No. 14</p>
+                                <div class="flex items-center justify-between mt-1 gap-2">
+                                    <p class="text-xs text-slate-300 font-semibold truncate" id="result-music">Rachmaninoff - Vocalise, Op. 34 No. 14</p>
+                                    <a href="https://www.youtube.com/results?search_query=Rachmaninoff+Vocalise+Op.34+No.14" id="result-youtube" target="_blank" class="text-slate-400 hover:text-steelglow transition-colors p-2 bg-steelblue/10 hover:bg-steelblue/20 rounded-lg flex-shrink-0" title="YouTube에서 검색">
+                                        <i class="fa-solid fa-headphones text-xs"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -694,21 +699,24 @@
                 title: "처마 밑에서 머무는 소리 사색",
                 desc: "우산 너머로 들려오는 빗방울 소리 하나에만 의식을 부드럽게 고정하는 최고의 사색 여정입니다. 한옥이나 고궁의 기와 밑에 가만히 걸터앉아 보거나 울창한 정원에 내리는 비를 가만히 감상해 보세요. 흙내음과 기와지붕 밑으로 떨어지는 규칙적인 낙수음이 마음 구석에 고여있던 생각의 부스러기들을 산뜻하게 지워줄 것입니다.",
                 action: "처마가 있는 조용한 한옥 카페 혹은 고궁 툇마루에서 15분 머무르기",
-                music: "Claude Debussy - Clair de Lune (달빛)"
+                music: "Claude Debussy - Clair de Lune (달빛)",
+                youtube: "https://www.youtube.com/results?search_query=Claude+Debussy+Clair+de+Lune"
             },
             color: {
                 badge: "도심 탐구 코스",
                 title: "젖은 골목의 중후한 네온 빛 채집",
                 desc: "비가 내린 골목길 보도블록은 고요하게 빛을 반사하는 훌륭한 캔버스가 됩니다. 아늑하게 불을 밝힌 작은 빈티지 북스토어나 LP 레코드샵을 최종 목적지로 정하고 흐릿한 빗속 골목을 느리게 걸어가 보세요. 빗물이 담긴 웅덩이 위로 내려앉은 세상의 거꾸로 흐르는 반영 사진을 수집해 보는 것은 멋진 추억이 됩니다.",
                 action: "골목길 물웅덩이에 반영되어 빛나는 간판의 잔영 사진 3장 소장하기",
-                music: "Chet Baker - Blue Room"
+                music: "Chet Baker - Blue Room",
+                youtube: "https://www.youtube.com/results?search_query=Chet+Baker+Blue+Room"
             },
             rest: {
                 badge: "안정 휴식 코스",
                 title: "흐르는 유리창 물방울과 멍 때리기",
                 desc: "비를 직접 맞지 않으면서 비의 운치를 완벽히 관조하는 따뜻한 휴식 코스입니다. 통유리가 펼쳐져 강이나 숲을 한눈에 담는 교외 북카페나 차분한 재즈 바의 창가 자리를 찾아가 보세요. 창문을 타고 사선으로 무작위로 미끄러져 내려가는 물줄기의 흐름에 눈동자를 맡기다 보면, 마음속 가득 차 있던 불필요한 무게들이 함께 쓸려 내려가는 해방감을 느낍니다.",
                 action: "유리창을 타고 무작위로 흘러내리는 빗방울 하나를 정해 끝까지 쫓아보기",
-                music: "Erik Satie - Gymnopédie No. 1"
+                music: "Erik Satie - Gymnopédie No. 1",
+                youtube: "https://www.youtube.com/results?search_query=Erik+Satie+Gymnopedie+No.1"
             }
         };
 
@@ -724,12 +732,14 @@
             const rDesc = document.getElementById('result-description');
             const rAction = document.getElementById('result-action');
             const rMusic = document.getElementById('result-music');
+            const rYoutube = document.getElementById('result-youtube');
 
             if (rBadge) rBadge.innerText = resultData.badge;
             if (rTitle) rTitle.innerText = resultData.title;
             if (rDesc) rDesc.innerHTML = resultData.desc;
             if (rAction) rAction.innerText = resultData.action;
             if (rMusic) rMusic.innerText = resultData.music;
+            if (rYoutube) rYoutube.href = resultData.youtube;
 
             resultBox.classList.remove('hidden');
             resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
