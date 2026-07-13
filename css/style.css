@@ -175,6 +175,16 @@ html:not(.dark) #rainbow-glow {
     animation: rainbowBreath 8s ease-in-out infinite alternate;
 }
 
+/* 라이트모드 contact 페이지 폼 레이블 및 안내 텍스트 가독성 확보 */
+html:not(.dark) #contact-form label {
+    color: #475569 !important; /* 부드러운 다크 그레이 톤 레이블 */
+}
+html:not(.dark) #contact-form input:focus,
+html:not(.dark) #contact-form textarea:focus {
+    background-color: #FFFFFF; /* 포커스 시 더욱 깔끔하게 하이라이트 */
+    box-shadow: 0 0 0 2px rgba(74, 105, 132, 0.2);
+}
+
 @keyframes rainbowBreath {
     0% {
         transform: translate(8px, -8px) scale(0.98);
