@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>소통 | I AM</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Premium Korean typography for Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <!-- FontAwesome icons for clean look -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#1E2229',
+                        darkaccent: '#16191E',
+                        steelblue: '#4A6984',
+                        steelglow: '#6589A8',
+                        charcoal: '#2D323E',
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- 분리한 공통 스타일시트 연결 -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="relative min-h-screen selection:bg-steelblue/35">
+
+    <!-- Ambient Dynamic Rain Canvas -->
+    <canvas id="rain-canvas"></canvas>
+
+    <!-- Header Navigation -->
+    <header class="content-layer w-full fixed top-0 left-0 bg-darkbg/85 backdrop-blur-md border-b border-white/5 transition-all duration-300 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-lg font-bold tracking-widest text-white flex items-center gap-2">
+                <span class="w-2.5 h-2.5 bg-steelblue rounded-full inline-block animate-pulse"></span>
+                I AM
+            </a>
+            
+            <!-- 데스크톱 네비게이션 (클래스로 현재 페이지 강조 가능) -->
+            <!-- * 복사 팁: 현재 열려있는 페이지의 링크에 'nav-active' 클래스를 붙여주면 밑줄+강조 처리됩니다. -->
+            <nav class="hidden md:flex space-x-8 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <a href="about.html" class="nav-item">비를 좋아하는 이유</a>
+                <a href="travel.html" class="nav-item">비오는날의 여행</a>
+                <a href="explore.html" class="nav-item">여정 탐색</a>
+                <a href="contact.html" class="nav-item nav-active">소통</a>
+            </nav>
+            
+            <!-- 모바일 햄버거 버튼 -->
+            <div class="md:hidden">
+                <button id="mobile-menu-btn" class="text-white hover:text-steelblue focus:outline-none" aria-label="메뉴 열기">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 모바일 드롭다운 네비게이션 메뉴 -->
+        <div id="mobile-menu" class="hidden bg-darkaccent/95 border-b border-white/5 px-6 py-4 space-y-3">
+            <a href="about.html" class="mobile-nav-item">비를 좋아하는 이유</a>
+            <a href="travel.html" class="mobile-nav-item">비오는날의 여행</a>
+            <a href="explore.html" class="mobile-nav-item">여정 탐색</a>
+            <a href="contact.html" class="mobile-nav-item mobile-nav-active">소통</a>
+        </div>
+    </header>
+
+    <!-- CTA (Share Your Memory) Section -->
+    <section id="contact" class="content-layer py-32 px-6 max-w-4xl mx-auto text-center space-y-8 min-h-screen flex flex-col justify-center">
+        <div class="space-y-3 animate-fade-in-up">
+            <span class="text-[11px] uppercase tracking-widest text-steelblue font-bold block">Share Your Weather</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-white">여러분의 흐린 날은 어떤 풍경인가요?</h2>
+            <p class="text-slate-400 text-xs max-w-lg mx-auto font-light leading-relaxed">
+                비에 촉촉하게 물든 도시에서 마주했던 당신만의 잊지 못할 여정의 온도가 있다면 담백하게 전해 주세요. 
+                그 고요한 마음 조각들은 또 다른 누군가의 평화로운 빗소리 노트에 기록되어 퍼져 나갑니다.
+            </p>
+        </div>
+
+        <!-- Custom Content Form -->
+        <form id="contact-form" onsubmit="handleFormSubmit(event)" class="glass-card max-w-lg mx-auto rounded-xl p-6 md:p-8 space-y-4 text-left shadow-2xl relative z-10 animate-fade-in-up animation-delay-200">
+            <div>
+                <label class="block text-[10px] font-bold text-slate-400 tracking-wider uppercase mb-1.5" for="visitor-name">닉네임 / 소중한 별명</label>
+                <input type="text" id="visitor-name" required placeholder="본명 혹은 편한 필명을 적어주세요." class="w-full px-4 py-3 bg-darkbg border border-white/10 rounded-lg text-xs text-white placeholder-slate-600 focus:outline-none focus:border-steelblue transition-colors">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-slate-400 tracking-wider uppercase mb-1.5" for="visitor-message">비 내리는 날씨에 나눴던 깊은 기억</label>
+                <textarea id="visitor-message" required rows="4" placeholder="당신에게 가장 평화롭고 고유했던 어느 도시의 흐리고 비 내리던 순간과 생각을 소박하게 들려주세요." class="w-full px-4 py-3 bg-darkbg border border-white/10 rounded-lg text-xs text-white placeholder-slate-600 focus:outline-none focus:border-steelblue transition-colors resize-none leading-relaxed"></textarea>
+            </div>
+            <button type="submit" class="w-full py-3 bg-steelblue hover:bg-steelglow text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-md hover:shadow-steelblue/30 transition-all duration-300">
+                기억 흘려보내기
+            </button>
+        </form>
+
+        <!-- Feedback Success Alert Toast -->
+        <div id="toast-success" class="hidden max-w-lg mx-auto p-4 bg-steelblue/20 border border-steelblue/40 text-slate-200 rounded-lg text-xs flex items-center justify-between shadow-xl">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-steelglow text-sm"></i> 당신이 적은 평화의 고백이 고요하게 보관되었습니다. 감사합니다.</span>
+            <button onclick="closeToast()" class="text-slate-400 hover:text-white" aria-label="토스트 닫기"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="content-layer py-12 px-6 border-t border-white/5 bg-darkaccent/60">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left space-y-1">
+                <span class="text-sm font-bold text-white tracking-widest">I AM</span>
+                <p class="text-[10px] text-slate-500">© 2026 I AM. All rights reserved. 비 오는 날의 흐름을 사랑하는 이의 사색적 여행 가이드.</p>
+            </div>
+            <div class="flex gap-6 text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+                <a href="about.html" class="hover:text-slate-300 transition-colors">이유</a>
+                <a href="travel.html" class="hover:text-slate-300 transition-colors">경험 조각</a>
+                <a href="explore.html" class="hover:text-slate-300 transition-colors">여정 탐색</a>
+                <a href="contact.html" class="hover:text-slate-300 transition-colors">소통</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 분리한 공통 스크립트 연결 -->
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비를 좋아하는 이유 | I AM</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Premium Korean typography for Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <!-- FontAwesome icons for clean look -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#1E2229',
+                        darkaccent: '#16191E',
+                        steelblue: '#4A6984',
+                        steelglow: '#6589A8',
+                        charcoal: '#2D323E',
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- 분리한 공통 스타일시트 연결 -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="relative min-h-screen selection:bg-steelblue/35">
+
+    <!-- Ambient Dynamic Rain Canvas -->
+    <canvas id="rain-canvas"></canvas>
+
+    <!-- Header Navigation -->
+    <header class="content-layer w-full fixed top-0 left-0 bg-darkbg/85 backdrop-blur-md border-b border-white/5 transition-all duration-300 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-lg font-bold tracking-widest text-white flex items-center gap-2">
+                <span class="w-2.5 h-2.5 bg-steelblue rounded-full inline-block animate-pulse"></span>
+                I AM
+            </a>
+            <nav class="hidden md:flex space-x-8 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <!-- 활성화 -->
+                <a href="about.html" class="relative py-1 transition-colors duration-300 hover:text-steelglow after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-steelblue after:transition-all after:duration-300 hover:after:w-full text-slate-200 after:w-full">
+                    비를 좋아하는 이유
+                </a>
+                <a href="travel.html" class="relative py-1 transition-colors duration-300 hover:text-steelglow after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-steelblue after:transition-all after:duration-300 hover:after:w-full text-slate-400 after:w-0">
+                    비오는날의 여행
+                </a>
+                <a href="explore.html" class="relative py-1 transition-colors duration-300 hover:text-steelglow after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-steelblue after:transition-all after:duration-300 hover:after:w-full text-slate-400 after:w-0">
+                    여정 탐색
+                </a>
+                <a href="contact.html" class="relative py-1 transition-colors duration-300 hover:text-steelglow after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-steelblue after:transition-all after:duration-300 hover:after:w-full text-slate-400 after:w-0">
+                    소통
+                </a>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-btn" class="text-white hover:text-steelblue focus:outline-none" aria-label="메뉴 열기">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden bg-darkaccent/95 border-b border-white/5 px-6 py-4 space-y-3">
+            <!-- 활성화 -->
+            <a href="about.html" class="block py-2 text-sm font-bold transition-all duration-200 hover:text-steelblue border-l-2 border-steelblue pl-2 text-steelglow">
+                비를 좋아하는 이유
+            </a>
+            <a href="travel.html" class="block py-2 text-sm font-medium transition-all duration-200 hover:text-steelblue hover:pl-1 text-slate-300">
+                비오는날의 여행
+            </a>
+            <a href="explore.html" class="block py-2 text-sm font-medium transition-all duration-200 hover:text-steelblue hover:pl-1 text-slate-300">
+                여정 탐색
+            </a>
+            <a href="contact.html" class="block py-2 text-sm font-medium transition-all duration-200 hover:text-steelblue hover:pl-1 text-slate-300">
+                소통
+            </a>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="content-layer py-32 px-6 relative min-h-screen flex items-center">
+        <div class="max-w-6xl mx-auto w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-5 space-y-6 animate-fade-in-up">
+                    <span class="text-[11px] uppercase tracking-widest text-steelblue font-bold block">About me</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white leading-snug">
+                        흐린 뒤에 찾아오는<br>도시 본연의 깊고 솔직한 색
+                    </h2>
+                    <p class="text-slate-400 text-sm leading-relaxed font-light">
+                        화려한 날의 도시는 바쁘게 분장한 연극 무대를 닮아있습니다.<br>
+                        하지만 하늘에 먹구름이 들이차고 첫 빗방울이 내려앉는 순식간, 세상은 무거운 소음을 잠재우고 내면의 목소리를 나지막하게 들려주기 시작합니다.<br><br>
+                        저는 빗줄기가 쏟아지면 우산 밑으로 발걸음을 옮겨, 흐려지는 세상의 실루엣을 하염없이 바라보는 것을 좋아합니다.
+                    </p>
+                    <div class="border-l-2 border-steelblue pl-4 py-1">
+                        <p class="text-xs text-slate-500 italic font-medium">"비를 피해 건물 안으로 달아나기보다, 우산을 고쳐 쥐고 그 스펙터클을 온전히 응시합니다."</p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 grid grid-cols-1 gap-6 animate-fade-in-up animation-delay-200">
+                    <!-- Philosophy Card 1 -->
+                    <div class="glass-card p-6 rounded-xl hover:border-steelblue/40 transition-all duration-300 group">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-steelblue/10 flex items-center justify-center text-steelblue text-lg flex-shrink-0 group-hover:bg-steelblue group-hover:text-white transition-all duration-300">
+                                <i class="fa-solid fa-umbrella"></i>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-base font-bold text-slate-200 group-hover:text-white transition-colors">1. 원래 좋아하는 고유한 날씨</h3>
+                                <p class="text-xs text-slate-400 leading-relaxed font-light">
+                                    세상이 약속이라도 한 듯 가만히 차분해지는 비 오는 무드를 평소에도 깊이 좋아합니다. 빗줄기가 도시의 무수한 소음을 지워나갈 때 가장 맑고 정갈한 마음의 휴식이 시작됩니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Philosophy Card 2 -->
+                    <div class="glass-card p-6 rounded-xl hover:border-steelblue/40 transition-all duration-300 group">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-steelblue/10 flex items-center justify-center text-steelblue text-lg flex-shrink-0 group-hover:bg-steelblue group-hover:text-white transition-all duration-300">
+                                <i class="fa-solid fa-palette"></i>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-base font-bold text-slate-200 group-hover:text-white transition-colors">2. 차분하게 가라앉은 도시의 색감</h3>
+                                <p class="text-xs text-slate-400 leading-relaxed font-light">
+                                    자극적이고 강렬한 채도의 햇빛 아래보다는, 비에 촉촉하게 젖어 본질적인 어둠과 깊이를 띤 도로와 건물의 묵직한 가라앉은 톤다운 컬러를 선호합니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Philosophy Card 3 -->
+                    <div class="glass-card p-6 rounded-xl hover:border-steelblue/40 transition-all duration-300 group">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-steelblue/10 flex items-center justify-center text-steelblue text-lg flex-shrink-0 group-hover:bg-steelblue group-hover:text-white transition-all duration-300">
+                                <i class="fa-solid fa-cloud-showers-heavy"></i>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-base font-bold text-slate-200 group-hover:text-white transition-colors">3. 날씨를 온전히 마주하기</h3>
+                                <p class="text-xs text-slate-400 leading-relaxed font-light">
+                                    파리 센강 바토무슈 2층의 야외 덱처럼 비와 바람을 피하려 도망치기보다, 단 하나의 우산에 의지해 대자연이 선사하는 가라앉은 정서를 있는 그대로 사색하고 마주합니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="content-layer py-12 px-6 border-t border-white/5 bg-darkaccent/60">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left space-y-1">
+                <span class="text-sm font-bold text-white tracking-widest">I AM</span>
+                <p class="text-[10px] text-slate-500">© 2026 I AM. All rights reserved. 비 오는 날의 흐름을 사랑하는 이의 사색적 여행 가이드.</p>
+            </div>
+            <div class="flex gap-6 text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+                <a href="about.html" class="hover:text-slate-300 transition-colors">이유</a>
+                <a href="travel.html" class="hover:text-slate-300 transition-colors">경험 조각</a>
+                <a href="explore.html" class="hover:text-slate-300 transition-colors">여정 탐색</a>
+                <a href="contact.html" class="hover:text-slate-300 transition-colors">소통</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 분리한 공통 스크립트 연결 -->
+    <script src="js/main.js"></script>
+</body>
+</html>

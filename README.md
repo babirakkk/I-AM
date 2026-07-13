@@ -26,12 +26,24 @@ HTML5 Canvas를 활용한 실시간 3D 패럴랙스 빗줄기 효과와 Web Audi
 본 프로젝트는 복잡한 빌드 도구가 필요 없으며, 아래와 같은 폴더 구조로 파일들을 위치시키면 완벽하게 로컬에서 실행됩니다.
 
 ```text
-├── index.html         # 웹사이트 통합 소스 코드 (HTML, CSS, JS)
-├── README.md          # 프로젝트 설명서 (본 파일)
-└── assets/            # 고해상도 로컬 이미지 및 비디오 자산 폴더
-    ├── shibuya_video.mp4           # [비디오] 도쿄 시부야 크로싱 빗속 전경
-    ├── bateaux_mouches.JPG         # [이미지] 파리 바토무슈 2층의 에펠탑 풍경
-    └── bateaux_mouches_video.mov   # [비디오] 주황색 비에 젖은 의자 전경
+my-rainy-travel/
+│
+├── index.html                 # 메인 홈 페이지 (인트로 및 전체 요약)
+├── about.html                 # 1. 비를 좋아하는 이유 페이지
+├── travel.html                # 2. 비오는날의 여행 페이지 (갤러리 및 모달)
+├── explore.html               # 3. 여정 탐색 페이지 (마음 날씨 탐색기)
+├── contact.html               # 4. 소통 페이지 (기억 공유 폼)
+│
+├── css/
+│   └── style.css              # 공통 커스텀 CSS (애니메이션, 폰트, Glassmorphism, 네비 활성화 스타일)
+│
+├── js/
+│   └── main.js                # 공통 자바스크립트 (비 Canvas 애니메이션, 앰비언스 오디오, 모바일 메뉴, 모달 로직)
+│
+└── assets/                    # 미디어 자산 디렉토리
+    ├── shibuya_video.mp4      # 시부야 교차로 비디오
+    ├── bateaux_mouches.JPG    # 바토무슈 유람선 이미지
+    └── bateaux_mouches_video.mov # 바토무슈 주황 의자 비디오[cite: 1]
 ```
 
 > ⚠️ **주의:** 사진과 비디오가 정상적으로 출력되도록 반드시 `index.html`이 있는 경로에 `assets` 폴더를 만들고 지정된 파일명으로 자산들을 위치시켜 주십시오.

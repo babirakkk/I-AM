@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비오는날의 여행 | I AM</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Premium Korean typography for Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <!-- FontAwesome icons for clean look -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#1E2229',
+                        darkaccent: '#16191E',
+                        steelblue: '#4A6984',
+                        steelglow: '#6589A8',
+                        charcoal: '#2D323E',
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- 분리한 공통 스타일시트 연결 -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="relative min-h-screen selection:bg-steelblue/35">
+
+    <!-- Ambient Dynamic Rain Canvas -->
+    <canvas id="rain-canvas"></canvas>
+
+    <!-- Header Navigation -->
+    <header class="content-layer w-full fixed top-0 left-0 bg-darkbg/85 backdrop-blur-md border-b border-white/5 transition-all duration-300 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-lg font-bold tracking-widest text-white flex items-center gap-2">
+                <span class="w-2.5 h-2.5 bg-steelblue rounded-full inline-block animate-pulse"></span>
+                I AM
+            </a>
+            
+            <!-- 데스크톱 네비게이션 -->
+            <nav class="hidden md:flex space-x-8 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <a href="about.html" class="nav-item">비를 좋아하는 이유</a>
+                <a href="travel.html" class="nav-item nav-active">비오는날의 여행</a>
+                <a href="explore.html" class="nav-item">여정 탐색</a>
+                <a href="contact.html" class="nav-item">소통</a>
+            </nav>
+            
+            <!-- 모바일 햄버거 버튼 -->
+            <div class="md:hidden">
+                <button id="mobile-menu-btn" class="text-white hover:text-steelblue focus:outline-none" aria-label="메뉴 열기">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 모바일 드롭다운 네비게이션 메뉴 -->
+        <div id="mobile-menu" class="hidden bg-darkaccent/95 border-b border-white/5 px-6 py-4 space-y-3">
+            <a href="about.html" class="mobile-nav-item">비를 좋아하는 이유</a>
+            <a href="travel.html" class="mobile-nav-item mobile-nav-active">비오는날의 여행</a>
+            <a href="explore.html" class="mobile-nav-item">여정 탐색</a>
+            <a href="contact.html" class="mobile-nav-item">소통</a>
+        </div>
+    </header>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="content-layer py-32 px-6 max-w-6xl mx-auto min-h-screen">
+        <div class="space-y-12 animate-fade-in-up">
+            <div class="text-center max-w-2xl mx-auto space-y-4">
+                <span class="text-[11px] uppercase tracking-widest text-steelblue font-bold block">Rainy Memoirs</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">빗방울 머금은 여정의 기억들</h2>
+                <p class="text-xs text-slate-400 font-light max-w-md mx-auto leading-relaxed">
+                    실제 마주했던 사색적인 우중 여행의 순간입니다. 카드를 탭하시면 빗물 뒤편에 감추어둔 내밀한 기록과 이야기를 자세히 읽으실 수 있습니다.
+                </p>
+            </div>
+
+            <!-- Experience Card Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Card 1: Tokyo Shibuya (Local Video) -->
+                <div class="glass-card rounded-xl overflow-hidden shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col group cursor-pointer" 
+                     onclick="openExperienceModal('tokyo')">
+                    <div class="h-80 relative overflow-hidden bg-slate-900 flex items-center justify-center">
+                        <video id="shibuya-video-element" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" autoplay muted loop playsinline>
+                            <source src="assets/shibuya_video.mp4" type="video/mp4">
+                        </video>
+                        <div class="absolute inset-0 bg-gradient-to-t from-darkbg via-transparent to-transparent opacity-90"></div>
+                        <!-- Live Indicator Badge -->
+                        <div class="absolute top-4 right-4 px-2.5 py-1 bg-steelblue/80 backdrop-blur-sm rounded text-[10px] text-white flex items-center gap-1.5 font-bold tracking-wide shadow-md">
+                            <span class="w-1.5 h-1.5 bg-red-500 rounded-full inline-block animate-ping"></span> 빗소리 시선
+                        </div>
+                        <div class="absolute bottom-4 left-4 text-left">
+                            <span class="text-[10px] uppercase tracking-wider text-steelglow font-bold">Shibuya Crossing</span>
+                            <h4 class="text-base font-extrabold text-white">Tokyo</h4>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-[11px] text-steelblue font-bold">
+                                <span>일본 도쿄</span>
+                                <span>시부야 스크램블</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-steelglow transition-colors">우산이 그리는 기하학적 파도</h3>
+                            <p class="text-xs text-slate-400 font-light leading-relaxed line-clamp-3">
+                                빌딩 높은 곳에서 비 오는 시부야를 마주했습니다. 각양각색 투명 우산들이 일정한 신호에 맞춰 움직이는 군무는, 바쁜 도심의 한복판마저 하나의 위대한 미니멀리즘 예술 작품으로 보이게 만듭니다.
+                            </p>
+                        </div>
+                        <span class="text-[11px] font-semibold text-steelblue inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform self-start">
+                            사색 기록 읽기 <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Paris Bateaux Mouches (Local Image) -->
+                <div class="glass-card rounded-xl overflow-hidden shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col group cursor-pointer" 
+                     onclick="openExperienceModal('paris')">
+                    <div class="h-80 relative overflow-hidden bg-slate-900 flex items-center justify-center">
+                        <img src="assets/bateaux_mouches.JPG" 
+                             alt="Paris Bateaux Mouches" 
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-darkbg via-transparent to-transparent opacity-90"></div>
+                        <div class="absolute bottom-4 left-4 text-left">
+                            <span class="text-[10px] uppercase tracking-wider text-steelglow font-bold">Bateaux Mouches</span>
+                            <h4 class="text-base font-extrabold text-white">Paris</h4>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-[11px] text-steelblue font-bold">
+                                <span>프랑스 파리</span>
+                                <span>센 강 (Seine)</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-steelglow transition-colors">초록 우산 너머의 에펠탑</h3>
+                            <p class="text-xs text-slate-400 font-light leading-relaxed line-clamp-3">
+                                소나기를 만난 유람선의 2층. 모두가 세찬 바람을 피해 선실 밑으로 대피했을 때, 홀로 짙은 녹색 우산을 쥐고 강바람을 정면으로 맞아들였습니다. 회색빛 안개 속에서 고독하게 떠오르던 에펠탑의 실루엣, 진정한 사색의 순간이었습니다.
+                            </p>
+                        </div>
+                        <span class="text-[11px] font-semibold text-steelblue inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform self-start">
+                            사색 기록 읽기 <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Paris Live Video (Local Video) -->
+                <div class="glass-card rounded-xl overflow-hidden shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col group cursor-pointer" 
+                     onclick="openExperienceModal('bateaux_video')">
+                    <div class="h-80 relative overflow-hidden bg-slate-900 flex items-center justify-center">
+                        <video id="gallery-video-element" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" autoplay muted loop playsinline>
+                            <source src="assets/bateaux_mouches_video.mov" type="video/mp4">
+                            <source src="assets/bateaux_mouches_video.mov" type="video/quicktime">
+                        </video>
+                        <div class="absolute inset-0 bg-gradient-to-t from-darkbg via-transparent to-transparent opacity-90"></div>
+                        <!-- Live Indicator Badge -->
+                        <div class="absolute top-4 right-4 px-2.5 py-1 bg-steelblue/80 backdrop-blur-sm rounded text-[10px] text-white flex items-center gap-1.5 font-bold tracking-wide shadow-md">
+                            <span class="w-1.5 h-1.5 bg-red-500 rounded-full inline-block animate-ping"></span> 빗소리 시선
+                        </div>
+                        <div class="absolute bottom-4 left-4 text-left">
+                            <span class="text-[10px] uppercase tracking-wider text-steelglow font-bold">Rainy Orange Chairs</span>
+                            <h4 class="text-base font-extrabold text-white">Paris deck</h4>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-[11px] text-steelblue font-bold">
+                                <span>프랑스 파리</span>
+                                <span>센 강 유람선 2층</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-steelglow transition-colors">주황색 빈 의자 위 맺히는 물방울</h3>
+                            <p class="text-xs text-slate-400 font-light leading-relaxed line-clamp-3">
+                                질서정연하게 도열된 주황빛의 의자들, 유려하게 흐르는 비구름 하늘, 가차 없이 떨어지는 차갑지만 맑은 빗방울. 비디오 속 무드를 조용히 들여다보며 당신의 복잡했던 감정을 단정하게 가라앉혀 보세요.
+                            </p>
+                        </div>
+                        <span class="text-[11px] font-semibold text-steelblue inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform self-start">
+                            사색 기록 읽기 <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Modal Overlay Container -->
+    <div id="experience-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-darkaccent/95 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-card max-w-4xl w-full rounded-2xl overflow-hidden shadow-2xl relative">
+            
+            <button onclick="closeExperienceModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-darkbg border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-steelblue transition-all duration-300 z-50" aria-label="모달 닫기">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+
+            <!-- Grid: Left (Media/Image/Video), Right (Narration) -->
+            <div class="grid grid-cols-1 md:grid-cols-2">
+                <!-- Media Area inside Modal -->
+                <div class="h-64 md:h-full relative bg-black min-h-[350px] flex items-center justify-center" id="modal-media-container">
+                    <img id="modal-img" src="" alt="Rainy Moment Detail" class="w-full h-full object-cover">
+                    <video id="modal-video" class="w-full h-full object-cover hidden" controls autoplay muted loop playsinline></video>
+                </div>
+                
+                <!-- Detailed Story Area inside Modal -->
+                <div class="p-8 md:p-10 space-y-6 flex flex-col justify-center">
+                    <div class="space-y-2">
+                        <span class="text-[10px] uppercase tracking-widest text-steelblue font-bold block" id="modal-sub">지역 및 정량 기록</span>
+                        <h3 class="text-2xl font-extrabold text-white" id="modal-title">사건 타이틀</h3>
+                    </div>
+
+                    <hr class="border-white/5">
+
+                    <div class="text-slate-300 text-xs md:text-sm leading-relaxed font-light space-y-4" id="modal-content">
+                        <!-- Loaded dynamically -->
+                    </div>
+
+                    <div class="bg-darkbg/50 border-l-2 border-steelblue p-4 rounded-r-lg" id="modal-quote-container">
+                        <p class="text-xs text-slate-400 italic leading-relaxed" id="modal-quote">
+                            "사색의 한 줄"
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="content-layer py-12 px-6 border-t border-white/5 bg-darkaccent/60">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left space-y-1">
+                <span class="text-sm font-bold text-white tracking-widest">I AM</span>
+                <p class="text-[10px] text-slate-500">© 2026 I AM. All rights reserved. 비 오는 날의 흐름을 사랑하는 이의 사색적 여행 가이드.</p>
+            </div>
+            <div class="flex gap-6 text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+                <a href="about.html" class="hover:text-slate-300 transition-colors">이유</a>
+                <a href="travel.html" class="hover:text-slate-300 transition-colors">경험 조각</a>
+                <a href="explore.html" class="hover:text-slate-300 transition-colors">여정 탐색</a>
+                <a href="contact.html" class="hover:text-slate-300 transition-colors">소통</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 분리한 공통 스크립트 연결 -->
+    <script src="js/main.js"></script>
+</body>
+</html>
