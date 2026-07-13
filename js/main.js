@@ -28,17 +28,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 테마 상태에 맞춰 스위치 배경색과 휠의 위치 초기 세팅 함수
     function updateToggleUI(isDark) {
+        const themeBtn = document.getElementById('theme-toggle-btn');
+        const themeThumb = document.getElementById('theme-toggle-thumb');
+        
         if (!themeBtn || !themeThumb) return;
+
+        const moonIcon = themeBtn.querySelector('.fa-moon');
+        const sunIcon = themeBtn.querySelector('.fa-sun');
+
         if (isDark) {
-            themeBtn.classList.remove('bg-slate-300');
-            themeBtn.classList.add('bg-slate-700');
-            themeThumb.classList.remove('translate-x-5');
-            themeThumb.classList.add('translate-x-0');
+            // --- 1. 다크모드 (비 오는 날) ---
+            themeBtn.style.backgroundColor = '#334155'; 
+            themeThumb.style.transform = 'translateX(0px)'; 
+            
+            // 달 아이콘 노출, 해 아이콘 숨김
+            if (moonIcon) moonIcon.classList.remove('hidden');
+            if (sunIcon) sunIcon.classList.add('hidden');
         } else {
-            themeBtn.classList.remove('bg-slate-700');
-            themeBtn.classList.add('bg-slate-300');
-            themeThumb.classList.remove('translate-x-0');
-            themeThumb.classList.add('translate-x-5');
+            // --- 2. 라이트모드 (비 갠 날) ---
+            themeBtn.style.backgroundColor = '#CBD5E1'; 
+            themeThumb.style.transform = 'translateX(20px)'; 
+            
+            // 달 아이콘 숨김, 해 아이콘 노출 (별도 인라인 색상 주입 없음)
+            if (moonIcon) moonIcon.classList.add('hidden');
+            if (sunIcon) sunIcon.classList.remove('hidden');
         }
     }
 

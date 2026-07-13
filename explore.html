@@ -77,9 +77,10 @@
 
             <!-- 슬라이더 스위치 토글 버튼 -->
             <button id="theme-toggle-btn" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-slate-700 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-1 focus:ring-steelblue/50 items-center ml-4" aria-label="화면 모드 변경">
-                <span id="theme-toggle-thumb" class="pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out flex items-center justify-center text-[10px] text-slate-700 translate-x-5 dark:translate-x-0">
-                    <i class="fa-solid fa-moon dark:inline hidden"></i>
-                    <i class="fa-solid fa-sun dark:hidden inline text-amber-500"></i>
+                <span id="theme-toggle-thumb" class="pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out flex items-center justify-center text-[10px] text-slate-700">
+                    <!-- 기본 클래스들을 걷어내어 자바스크립트가 온전히 제어할 수 있도록 설정 -->
+                    <i class="fa-solid fa-moon"></i>
+                    <i class="fa-solid fa-sun hidden"></i>
                 </span>
             </button>
 
