@@ -559,8 +559,61 @@ function generateRainyJourney(key) {
 
 
 // ==========================================================================
-// 6. Contact Form Submission Interactivity
+// 6. LocalStorage 기반 감성 방명록 시스템 (확장 버전)
 // ==========================================================================
+
+// 페이지가 로드되었을 때 기존에 저장된 방명록이 있다면 즉시 화면에 출력
+document.addEventListener('DOMContentLoaded', () => {
+    renderGuestbook();
+});
+
+// 방명록 리스트를 화면에 동적으로 그려주는 함수
+function renderGuestbook() {
+    const listEl = document.getElementById('guestbook-list');
+    if (!listEl) return;
+
+    // 로컬 스토리지에서 'comments' 키로 데이터를 읽어옴 (없으면 빈 배열)
+    const comments = JSON.parse(localStorage.getItem('comments')) || [];
+    
+    // 리스트 초기화
+    listEl.innerHTML = '';
+
+    if (comments.length === 0) {
+        return; // 작성된 글이 없으면 아무것도 띄우지 않음
+    }
+
+    // 최신 글이 위로 오도록 배열을 역순으로 렌더링
+    comments.slice().reverse().forEach((item, index) => {
+        // 배열 원본의 실제 인덱스 계산 (삭제 기능용)
+        const actualIndex = comments.length - 1 - index;
+
+        const card = document.createElement('div');
+        // 기존 테마 및 라이트모드와 완벽하게 호환되는 글래스모피즘 카드 스타일 주입
+        card.className = "glass-card w-full rounded-xl p-5 md:p-6 text-left shadow-lg space-y-2 transition-all duration-300 relative group animate-fade-in-up";
+        
+        card.innerHTML = `
+            <div class="flex justify-between items-start">
+                <div class="space-y-0.5">
+                    <span class="text-[9px] text-steelblue font-bold uppercase tracking-widest block">Logged Memory</span>
+                    <h4 class="text-xs font-bold text-slate-200 dark:text-white flex items-center gap-1.5">
+                        <i class="fa-regular fa-user text-[10px] text-slate-400"></i> ${escapeHtml(item.name)}
+                    </h4>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-[9px] text-slate-500 font-mono">${item.date}</span>
+                    <!-- 개별 기억 지우기 버튼 (호버 시 은은하게 노출) -->
+                    <button onclick="deleteMemory(${actualIndex})" class="text-[9px] text-red-400/60 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200" title="이 기억 지우기">
+                        기억 지우기
+                    </button>
+                </div>
+            </div>
+            <p class="text-xs text-slate-300 dark:text-slate-400 font-light leading-relaxed whitespace-pre-wrap pt-1 border-t border-white/5 dark:border-white/5">${escapeHtml(item.message)}</p>
+        `;
+        listEl.appendChild(card);
+    });
+}
+
+// 폼 서브밋 이벤트 핸들러 보정
 function handleFormSubmit(e) {
     e.preventDefault();
     const nameEl = document.getElementById('visitor-name');
@@ -568,25 +621,68 @@ function handleFormSubmit(e) {
 
     if (!nameEl || !messageEl) return;
 
-    const name = nameEl.value;
-    const message = messageEl.value;
+    const name = nameEl.value.trim();
+    const message = messageEl.value.trim();
 
-    if (name.trim() === '' || message.trim() === '') return;
+    if (name === '' || message === '') return;
 
-    // Reset Inputs
+    // 현재 날짜와 시간 포맷팅 (예: 2026.07.13 13:06)
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+    // 새로운 방명록 객체 생성
+    const newComment = {
+        name: name,
+        message: message,
+        date: formattedDate
+    };
+
+    // 기존 데이터 로드 후 병합
+    const comments = JSON.parse(localStorage.getItem('comments')) || [];
+    comments.push(newComment);
+
+    // 다시 로컬 스토리지에 스트링화하여 저장
+    localStorage.setItem('comments', JSON.stringify(comments));
+
+    // 입력창 비우기
     nameEl.value = '';
     messageEl.value = '';
 
-    // Trigger Success Alert Toast
+    // 토스트 알림 컴포넌트 작동
     const toast = document.getElementById('toast-success');
     if (toast) {
         toast.classList.remove('hidden');
         setTimeout(() => {
             toast.classList.add('hidden');
-        }, 7000);
+        }, 5000);
     }
+
+    // 새로고침 없이 즉시 리스트 갱신
+    renderGuestbook();
 }
 
+// 개별 기억 삭제 함수
+function deleteMemory(index) {
+    const comments = JSON.parse(localStorage.getItem('comments')) || [];
+    // 해당 인덱스의 방명록 제거
+    comments.splice(index, 1);
+    localStorage.setItem('comments', JSON.stringify(comments));
+    
+    // 리스트 리렌더링
+    renderGuestbook();
+}
+
+// XSS 방지를 위한 단순 텍스트 이스케이프 안전 장치
+function escapeHtml(str) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+// 기존 토스트 닫기 함수 유지
 function closeToast() {
     const toast = document.getElementById('toast-success');
     if (toast) {
