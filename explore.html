@@ -1,7 +1,18 @@
 <!DOCTYPE html>
-<html lang="ko" class="scroll-smooth">
+<html lang="ko" class="scroll-smooth dark">
 <head>
     <meta charset="UTF-8">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            // 로컬 스토리지에 라이트모드가 저장되어 있다면, HTML의 dark 클래스를 즉시 제거
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>여정 탐색 | I AM</title>
     <!-- Tailwind CSS CDN -->
@@ -38,6 +49,9 @@
     <!-- Ambient Dynamic Rain Canvas -->
     <canvas id="rain-canvas"></canvas>
 
+    <!-- 무지개 레이어 -->
+    <div id="rainbow-glow" class="pointer-events-none fixed top-0 right-0 w-[60vw] h-[60vh] z-2 opacity-0 dark:opacity-0 transition-opacity duration-1000"></div>
+
     <!-- Header Navigation -->
     <header class="content-layer w-full fixed top-0 left-0 bg-darkbg/85 backdrop-blur-md border-b border-white/5 transition-all duration-300 z-50">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -60,6 +74,15 @@
                     소통
                 </a>
             </nav>
+
+            <!-- 슬라이더 스위치 토글 버튼 -->
+            <button id="theme-toggle-btn" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-slate-700 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-1 focus:ring-steelblue/50 items-center ml-4" aria-label="화면 모드 변경">
+                <span id="theme-toggle-thumb" class="pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out flex items-center justify-center text-[10px] text-slate-700 translate-x-5 dark:translate-x-0">
+                    <i class="fa-solid fa-moon dark:inline hidden"></i>
+                    <i class="fa-solid fa-sun dark:hidden inline text-amber-500"></i>
+                </span>
+            </button>
+
             <div class="md:hidden">
                 <button id="mobile-menu-btn" class="text-white hover:text-steelblue focus:outline-none" aria-label="메뉴 열기">
                     <i class="fa-solid fa-bars text-lg"></i>

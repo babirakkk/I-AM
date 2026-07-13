@@ -22,6 +22,44 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Local video loading error or codec restriction:", e);
         }, true);
     }
+
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const themeThumb = document.getElementById('theme-toggle-thumb');
+
+    // 테마 상태에 맞춰 스위치 배경색과 휠의 위치 초기 세팅 함수
+    function updateToggleUI(isDark) {
+        if (!themeBtn || !themeThumb) return;
+        if (isDark) {
+            themeBtn.classList.remove('bg-slate-300');
+            themeBtn.classList.add('bg-slate-700');
+            themeThumb.classList.remove('translate-x-5');
+            themeThumb.classList.add('translate-x-0');
+        } else {
+            themeBtn.classList.remove('bg-slate-700');
+            themeBtn.classList.add('bg-slate-300');
+            themeThumb.classList.remove('translate-x-0');
+            themeThumb.classList.add('translate-x-5');
+        }
+    }
+
+    if (themeBtn) {
+        // 초기 로드 시 상태 반영
+        const isDarkInitial = document.documentElement.classList.contains('dark');
+        updateToggleUI(isDarkInitial);
+
+        themeBtn.addEventListener('click', () => {
+            const htmlClass = document.documentElement.classList;
+            if (htmlClass.contains('dark')) {
+                htmlClass.remove('dark');
+                localStorage.setItem('theme', 'light');
+                updateToggleUI(false);
+            } else {
+                htmlClass.add('dark');
+                localStorage.setItem('theme', 'dark');
+                updateToggleUI(true);
+            }
+        });
+    }
 });
 
 
@@ -143,6 +181,59 @@ class Splash {
     }
 }
 
+// ==========================================================================
+// 맑게 갠 날씨의 햇살 입자(Sunbeam Particles) 클래스 정의
+// ==========================================================================
+const sunbeams = [];
+const maxSunbeams = 40; // 화면에 유영할 빛가루 개수
+
+class Sunbeam {
+    constructor() {
+        this.reset();
+        this.y = Math.random() * height; // 초기화 시 화면 전체에 분산 배치
+    }
+
+    reset() {
+        this.x = Math.random() * width;
+        this.y = height + Math.random() * 20; // 화면 밑에서 위로 생성
+        this.radius = 1 + Math.random() * 3;  // 아른거리는 크기
+        this.alpha = 0.1 + Math.random() * 0.4;
+        this.speedY = 0.2 + Math.random() * 0.4; // 위로 천천히 떠오름
+        this.speedX = (Math.random() - 0.5) * 0.3; // 좌우 흔들림
+    }
+
+    update() {
+        this.y -= this.speedY;
+        this.x += this.speedX;
+        
+        // 화면 상단으로 사라지면 다시 바닥에서 리셋
+        if (this.y < -10 || this.x < -10 || this.x > width + 10) {
+            this.reset();
+        }
+    }
+
+    draw() {
+        if (!ctx) return;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        // 따뜻한 금빛 선샤인 컬러의 반짝임 효과
+        ctx.fillStyle = `rgba(253, 224, 71, ${this.alpha})`;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = "rgba(253, 224, 71, 0.6)";
+        ctx.fill();
+        // 캔버스 다른 드로잉에 그림자 간섭 없도록 컨텍스트 리셋용 설정
+        ctx.shadowBlur = 0;
+    }
+}
+
+// 초기화용 로직 보완 (윈도우 로드 시 빛가루 미리 생성)
+window.addEventListener('load', () => {
+    initCanvas();
+    for (let i = 0; i < maxSunbeams; i++) {
+        sunbeams.push(new Sunbeam());
+    }
+});
+
 function createSplashes(x, y) {
     let count = 2 + Math.floor(Math.random() * 3);
     for (let i = 0; i < count; i++) {
@@ -182,28 +273,48 @@ function animate() {
     if (!ctx) return;
     ctx.clearRect(0, 0, width, height);
 
-    raindrops.forEach(drop => {
-        drop.update();
-        drop.draw();
-    });
+    // 현재 테마 확인 (dark 클래스가 없으면 맑은 날)
+    const isSunny = !document.documentElement.classList.contains('dark');
 
-    for (let i = splashes.length - 1; i >= 0; i--) {
-        const splash = splashes[i];
-        splash.update();
-        if (splash.alpha <= 0) {
-            splashes.splice(i, 1);
-        } else {
-            splash.draw();
+    if (isSunny) {
+        // --- 1. 날이 개어 맑은 상태: 햇빛 가루 이펙트 가동 ---
+        splashes.length = 0;
+        ripples.length = 0;
+
+        // 비 오디오 강제 종료
+        if (ambientSounding && audioCtx && audioCtx.state === 'running') {
+            toggleAmbientSfx(); 
         }
-    }
 
-    for (let i = ripples.length - 1; i >= 0; i--) {
-        const rip = ripples[i];
-        rip.update();
-        if (rip.alpha <= 0) {
-            ripples.splice(i, 1);
-        } else {
-            rip.draw();
+        sunbeams.forEach(beam => {
+            beam.update();
+            beam.draw();
+        });
+    } else {
+        // --- 2. 비 내리는 상태 (기존 코드 유지) ---
+        raindrops.forEach(drop => {
+            drop.update();
+            drop.draw();
+        });
+
+        for (let i = splashes.length - 1; i >= 0; i--) {
+            const splash = splashes[i];
+            splash.update();
+            if (splash.alpha <= 0) {
+                splashes.splice(i, 1);
+            } else {
+                splash.draw();
+            }
+        }
+
+        for (let i = ripples.length - 1; i >= 0; i--) {
+            const rip = ripples[i];
+            rip.update();
+            if (rip.alpha <= 0) {
+                ripples.splice(i, 1);
+            } else {
+                rip.draw();
+            }
         }
     }
 

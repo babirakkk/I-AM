@@ -134,3 +134,127 @@ body {
 .animation-delay-400 {
     animation-delay: 400ms;
 }
+
+/* ==========================================================================
+   Light Mode (비 갠 뒤 정제된 프리즘 무지개 효과)
+   ========================================================================== */
+html:not(.dark) body {
+    background: linear-gradient(135deg, #F0F4F8 0%, #F8FAFC 100%);
+    background-attachment: fixed;
+    color: #334155;
+    transition: background 0.8s ease;
+}
+
+/* 라이트모드 진입 시 무지개가 스며드는 투명도 스케일 보정 */
+html:not(.dark) #rainbow-glow {
+    opacity: 0.85; /* [보정] 대기 중에 맺힌 무지개 광막을 조금 더 뚜렷하게 노출 */
+}
+
+/* 우측 상단에서 비스듬하게 퍼져나오는 무지개 스펙트럼 광막 */
+#rainbow-glow {
+    /* [보정] 색상의 알파 투명도(0.25 -> 0.45)를 올려서 프리즘 띠의 색 흐름을 확실하게 인지하도록 만듦 */
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0) 15%,
+        rgba(254, 140, 140, 0.45) 32%,  /* 빨 */
+        rgba(253, 200, 90, 0.42) 41%,   /* 주/노 */
+        rgba(134, 239, 172, 0.40) 50%,  /* 초 */
+        rgba(125, 211, 252, 0.42) 59%,  /* 파 */
+        rgba(196, 150, 246, 0.38) 68%,  /* 보 */
+        rgba(255, 255, 255, 0) 85%
+    );
+    
+    /* 너무 날카로운 선이 되지 않도록 유지하되, 색 영역의 뭉개짐을 적절하게 잡아주는 블러값 최적화 */
+    filter: blur(35px);
+    
+    /* 타원형 마스크를 씌워 가장자리 테두리를 부드럽게 감춤 */
+    mask-image: radial-gradient(circle at 85% 15%, black 25%, transparent 75%);
+    -webkit-mask-image: radial-gradient(circle at 85% 15%, black 25%, transparent 75%);
+    
+    /* 대기 중에서 차분히 빛이 찰랑거리는 펄스 효과 */
+    animation: rainbowBreath 8s ease-in-out infinite alternate;
+}
+
+@keyframes rainbowBreath {
+    0% {
+        transform: translate(8px, -8px) scale(0.98);
+        filter: blur(35px) opacity(0.85);
+    }
+    100% {
+        transform: translate(0px, 0px) scale(1.03);
+        filter: blur(45px) opacity(0.95);
+    }
+}
+
+@keyframes rainbowBreath {
+    0% {
+        transform: translate(10px, -10px) scale(1);
+        filter: blur(40px) opacity(0.8);
+    }
+    100% {
+        transform: translate(0px, 0px) scale(1.05);
+        filter: blur(50px) opacity(0.9);
+    }
+}
+
+/* ... 이하 기존 라이트모드 UI 텍스트 컬러 보정 클래스들 유지 ... */
+
+/* 라이트모드 헤더 투명도 및 보정 */
+html:not(.dark) header {
+    background-color: rgba(248, 250, 252, 0.85) !important;
+    border-bottom: 1px solid rgba(74, 105, 132, 0.1);
+}
+html:not(.dark) header a {
+    color: #0F172A !important;
+}
+html:not(.dark) nav a {
+    color: #64748B !important;
+}
+html:not(.dark) nav a:hover {
+    color: #4A6984 !important;
+}
+
+/* 라이트모드 Glassmorphic 카드 */
+html:not(.dark) .glass-card {
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(74, 105, 132, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.06);
+}
+
+/* 텍스트 컬러 강제 리셋 방지 및 부드러운 다크 그레이 전환 */
+html:not(.dark) .text-white,
+html:not(.dark) h1, html:not(.dark) h2, html:not(.dark) h3, html:not(.dark) h4 {
+    color: #0F172A !important;
+}
+html:not(.dark) .text-slate-400, 
+html:not(.dark) .text-slate-300,
+html:not(.dark) p {
+    color: #334155 !important;
+}
+html:not(.dark) .text-slate-500 {
+    color: #64748B !important;
+}
+
+/* 인터랙티브 요소 라이트모드 커스텀 */
+html:not(.dark) #mood-selectors button {
+    background-color: rgba(255, 255, 255, 0.75);
+    border-color: rgba(74, 105, 132, 0.1);
+}
+html:not(.dark) #mood-selectors button:hover {
+    background-color: rgba(74, 105, 132, 0.08);
+    border-color: #4A6984;
+}
+html:not(.dark) #recommend-result {
+    background-color: rgba(255, 255, 255, 0.6);
+    border-color: rgba(74, 105, 132, 0.15);
+}
+html:not(.dark) #recommend-result div {
+    background-color: rgba(241, 245, 249, 0.8);
+    border-color: rgba(74, 105, 132, 0.05);
+}
+html:not(.dark) footer {
+    background-color: rgba(241, 245, 249, 0.5);
+    border-top: 1px solid rgba(74, 105, 132, 0.1);
+}
